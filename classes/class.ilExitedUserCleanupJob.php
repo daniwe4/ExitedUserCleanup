@@ -75,17 +75,17 @@ class ilExitedUserCleanupJob extends ilCronJob {
 			ilCronManager::ping($this->getId());
 
 			$usr->setActive(false);
-			$ilLog->write("gevExitedUserCleanupJob: Deactivated user with id $usr_id.");
+			$ilLog->write("ilExitedUserCleanupJob: Deactivated user with id $usr_id.");
 			ilCronManager::ping($this->getId());
 
 			foreach($actions->getUserOrgUnits($usr_id) as $orgu_id) {
 				$actions->deassignOrgUnit($usr_id, $orgu_id);
-				$ilLog->write("gevExitedUserCleanupJob: Removed user with id $usr_id from OrgUnit with id $orgu_id.");
+				$ilLog->write("ilExitedUserCleanupJob: Removed user with id $usr_id from OrgUnit with id $orgu_id.");
 			}
 			ilCronManager::ping($this->getId());
 
 			$actions->assignToExitOrgunit($usr_id);
-			$ilLog->write("gevExitedUserCleanupJob: Moved user with id $usr_id to exit-OrgUnit.");
+			$ilLog->write("ilExitedUserCleanupJob: Moved user with id $usr_id to exit-OrgUnit.");
 			ilCronManager::ping($this->getId());
 
 			try {
