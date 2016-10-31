@@ -1,12 +1,10 @@
 <?php
 require_once("Services/GEV/Utils/classes/class.gevSettings.php");
-require_once("Services/GEV/Utils/classes/class.gevNAUtils.php");
 require_once("Services/GEV/Utils/classes/class.gevOrgUnitUtils.php");
 require_once("Services/GEV/Utils/classes/class.gevCourseUtils.php");
 require_once("Services/GEV/Utils/classes/class.gevObjectUtils.php");
 require_once("Modules/OrgUnit/classes/class.ilObjOrgUnitTree.php");
 require_once("Services/GEV/Mailing/classes/class.gevCrsAutoMails.php");
-require_once("Services/GEV/WBD/classes/class.gevWBD.php");
 
 class ilActions {
 	const CRS_NO_START_DATE = "no_start_date";
@@ -17,8 +15,6 @@ class ilActions {
 		$this->db = $db;
 		$this->log = $log;
 		$this->settings = gevSettings::getInstance();
-		$this->na_utils = gevNAUtils::getInstance();
-		$this->na_no_adviser_orgu_utils = gevOrgUnitUtils::getInstance($this->settings->getNAPOUNoAdviserUnitId());
 	}
 
 	public function getActiveExitedUser() {
@@ -92,37 +88,6 @@ class ilActions {
 		$exit_orgu_utils = gevOrgUnitUtils::getInstance($exit_orgu_obj_id);
 
 		$exit_orgu_utils->assignUser($usr_id, "Mitarbeiter");
-	}
-
-	public function getNaOf($usr_id) {
-		return $this->na_utils->getNAsOf($usr_id);
-	}
-
-	public function assignNaToNoAdviser($na_usr_id) {
-		$this->na_no_adviser_orgu_utils->assignUser($na, "Mitarbeiter");
-	}
-
-	public function removeNAOrgUnitOf($usr_id) {
-		$this->na_utils->removeNAOrgUnitOf($usr_id);
-	}
-
-	public function purgeEmptyNaOrgu() {
-		$na_base_utils = gevOrgUnitUtils::getInstance($this->settings->getNAPOUBaseUnitId());
-		$no_adviser_ref_id = gevObjectUtils::getRefId($this->settings->getNAPOUNoAdviserUnitId());
-		$template_ref_id = gevObjectUtils::getRefId($this->settings->getNAPOUTemplateUnitId());
-
-		$na_base_utils->purgeEmptyChildren(2, array($no_adviser_ref_id, $template_ref_id));
-	}
-
-	public function setWBDActionToExit($usr_id) {
-		$wbd_utils = gevWBD::getInstance($usr_id);
-
-		if($wbd_utils->getWBDTPType() == gevWBD::WBD_TP_SERVICE) {
-			$wbd_utils->setNextWBDAction(gevWBD::USR_WBD_NEXT_ACTION_RELEASE);
-			return true;
-		}
-
-		return false;
 	}
 
 	protected function getDB() {
