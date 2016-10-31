@@ -59,16 +59,16 @@ class ilExitedUserCleanupJob extends ilCronJob {
 
 				switch($return) {
 					case ilActions::CRS_NO_START_DATE:
-						$ilLog->write("gevExitedUserCleanupJob: User $usr_id was not removed from training $crs_id, since"
+						$ilLog->write("ilExitedUserCleanupJob: User $usr_id was not removed from training $crs_id, since"
 							." the start date of the training could not be determined.");
 						break;
 					case ilActions::CRS_START_DATE_EXPIRED:
-						$ilLog->write("gevExitedUserCleanupJob: User $usr_id was not removed from training $crs_id, since"
+						$ilLog->write("ilExitedUserCleanupJob: User $usr_id was not removed from training $crs_id, since"
 							." training start date expired: ".$start_date->get(IL_CAL_DATE)." < ".$now);
 						break;
 					case ilActions::CRS_CANCELD:
 						$actions->sendExitMail($crs_id, $usr_id);
-						$ilLog->write("gevExitedUserCleanupJob: User $usr_id was canceled from training $crs_id.");
+						$ilLog->write("ilExitedUserCleanupJob: User $usr_id was canceled from training $crs_id.");
 						break;
 				}
 			}
@@ -92,23 +92,23 @@ class ilExitedUserCleanupJob extends ilCronJob {
 				$nas = $actions->getNaOf();
 				foreach ($nas as $na) {
 					$actions->assignNaToNoAdviser($na);
-					$ilLog->write("gevExitedUserCleanupJob: Moved na $na of user $usr_id to no-adviser-OrgUnit.");
+					$ilLog->write("ilExitedUserCleanupJob: Moved na $na of user $usr_id to no-adviser-OrgUnit.");
 				}
 				if (count($nas) > 0) {
 					$actions->removeNAOrgUnitOf($usr_id);
-					$ilLog->write("gevExitedUserCleanupJob: Removed NA-OrgUnit of $usr_id.");
+					$ilLog->write("ilExitedUserCleanupJob: Removed NA-OrgUnit of $usr_id.");
 				}
 			}
 			catch (Exception $e) {
-				$ilLog->write("gevExitedUserCleanupJob: ".$e);
+				$ilLog->write("ilExitedUserCleanupJob: ".$e);
 			}
 
 			try {
 				if($actions->setWBDActionToExit($usr_id)) {
-					$ilLog->write("gevExitedUserCleanupJob: Set next wbd action to release for user: ".$usr_id.".");
+					$ilLog->write("ilExitedUserCleanupJob: Set next wbd action to release for user: ".$usr_id.".");
 				}
 			}catch (Exception $e) {
-				$ilLog->write("gevExitedUserCleanupJob: ".$e);
+				$ilLog->write("ilExitedUserCleanupJob: ".$e);
 			}
 
 			//update user and create a history entry
@@ -120,7 +120,7 @@ class ilExitedUserCleanupJob extends ilCronJob {
 			ilCronManager::ping($this->getId());
 		}
 
-		$ilLog->write("gevExitedUserCleanupJob: purging empty na-org units.");
+		$ilLog->write("ilExitedUserCleanupJob: purging empty na-org units.");
 		$actions->purgeEmptyNaOrgu();
 
 		$cron_result->setStatus(ilCronJobResult::STATUS_OK);
