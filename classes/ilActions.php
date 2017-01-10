@@ -22,19 +22,19 @@ class ilActions {
 
 		$exit_udf_field_id = $this->settings->getUDFFieldId(gevSettings::USR_UDF_EXIT_DATE);
 
-		$res = $this->getDB()->query("SELECT ud.usr_id "
+		$res = $this->getDB()->query("SELECT ud.usr_id, udf.value "
 						   ."  FROM usr_data ud"
 						   ."  JOIN udf_text udf "
 						   ."    ON udf.usr_id = ud.usr_id"
 						   ."   AND field_id = ".$this->getDB()->quote($exit_udf_field_id, "integer")
 						   ." WHERE active = 1 "
-						   ."   AND udf.value < CURDATE()"
 						   );
-
 		while($row = $this->getDB()->fetchAssoc($res)) {
-			$ret[] = $row["usr_id"];
+			echo $row['value'];
+			if(preg_match('/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/', $row['value'])) {
+				$ret[] = $row["usr_id"];
+			}
 		}
-
 		return $ret;
 	}
 
