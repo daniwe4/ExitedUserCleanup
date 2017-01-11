@@ -30,7 +30,6 @@ class ilActions {
 						   ." WHERE active = 1 "
 						   );
 		while($row = $this->getDB()->fetchAssoc($res)) {
-			echo $row['value'];
 			if(preg_match('/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/', $row['value'])) {
 				$ret[] = $row["usr_id"];
 			}
